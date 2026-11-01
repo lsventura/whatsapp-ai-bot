@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Agendamento — Clínica Sorriso Exemplo (demo)</title>
+    <style>
+      body { font-family: system-ui, sans-serif; background: #f4f6f8; margin: 0; padding: 2rem; }
+      main { max-width: 480px; margin: 0 auto; background: #fff; padding: 2rem; border-radius: 12px; box-shadow: 0 2px 12px #0001; }
+      h1 { margin-top: 0; font-size: 1.4rem; }
+      label { display: block; margin: 1rem 0 .25rem; font-weight: 600; font-size: .9rem; }
+      input, select, textarea { width: 100%; padding: .6rem; border: 1px solid #c9d1d9; border-radius: 6px; box-sizing: border-box; font: inherit; }
+      button { margin-top: 1.5rem; width: 100%; padding: .8rem; border: 0; border-radius: 6px; background: #0b7a75; color: #fff; font-size: 1rem; cursor: pointer; }
+      .ok { background: #e6f6ee; border: 1px solid #8fd3ad; padding: 1rem; border-radius: 8px; margin-top: 1rem; }
+      .erro { color: #b42318; margin-top: 1rem; }
+      small { color: #667085; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Agendamento de consulta</h1>
+      <small>Formulário de demonstração usado pelo módulo de automação do bot.</small>
+      <form id="form" novalidate>
+        <label for="nome">Nome completo</label>
+        <input id="nome" name="nome" required />
+
+        <label for="email">E-mail</label>
+        <input id="email" name="email" type="email" required />
+
+        <label for="telefone">Telefone</label>
+        <input id="telefone" name="telefone" type="tel" required />
+
+        <label for="servico">Serviço</label>
+        <select id="servico" name="servico" required>
+          <option value="">Selecione…</option>
+          <option value="avaliacao">Avaliação</option>
+          <option value="limpeza">Limpeza</option>
+          <option value="clareamento">Clareamento</option>
+          <option value="urgencia">Urgência</option>
+        </select>
+
+        <label for="data">Data preferida</label>
+        <input id="data" name="data" type="date" required />
+
+        <label for="observacoes">Observações</label>
+        <textarea id="observacoes" name="observacoes" rows="3"></textarea>
+
+        <button id="enviar" type="submit">Enviar pedido</button>
+      </form>
+
+      <div id="erro" class="erro" hidden></div>
+      <div id="sucesso" class="ok" hidden>
+        Pedido recebido! Protocolo: <strong id="protocolo"></strong>
+      </div>
+    </main>
+
+    <script>
+      const form = document.getElementById("form");
+      const erro = document.getElementById("erro");
+      const sucesso = document.getElementById("sucesso");
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        erro.hidden = true;
+        const payload = Object.fromEntries(new FormData(form).entries());
+        try {
+          const response = await fetch("/demo-form/submit", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+          const data = await response.json();
+          if (!response.ok) throw new Error(data.error || "Erro ao enviar");
+          document.getElementById("protocolo").textContent = data.protocolo;
+          sucesso.hidden = false;
+        } catch (e) {
+          erro.textContent = e.message;
+          erro.hidden = false;
+        }
+      });
+    </script>
+  </body>
+</html>

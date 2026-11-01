@@ -1,0 +1,45 @@
+/////////////////////////////////////////////////////////////////////
+// Regra de coloracao - VOLUME + FORCA DO FECHAMENTO (ProfitChart / NTSL)
+//
+// Alternativa que NAO depende do Plugin TR: usa apenas dados de
+// candle (Quantity, High, Low, Close), disponiveis em todas as versoes.
+//
+// Ideia: candle com quantidade acima da media E fechamento perto da
+// maxima indica pressao compradora; perto da minima, pressao vendedora.
+//   verde    = volume alto + fechou no topo do candle
+//   vermelho = volume alto + fechou no fundo do candle
+//   amarelo  = volume alto, mas fechou no meio (disputa)
+//   cinza    = volume abaixo da media (sem relevancia)
+//
+// Funcoes usadas (todas listadas no Manual NTSL):
+//   Media, Quantity, High, Low, Close, PaintBar
+/////////////////////////////////////////////////////////////////////
+
+input
+  PeriodoMedia(20);        // periodo da media de quantidade
+  FatorVolume(1.2);        // "volume alto" = quantidade > 1,2x a media
+  LimiteFechamento(0.7);   // 0.7 = fechamento nos 30% superiores/inferiores do candle
+
+var
+  mediaQtd  : Float;
+  amplitude : Float;
+  posFech   : Float;       // 0 = fechou na minima, 1 = fechou na maxima
+
+begin
+  mediaQtd  := Media(PeriodoMedia, Quantity);
+  amplitude := High - Low;
+
+  if (amplitude > 0) and (Quantity > mediaQtd * FatorVolume) then
+    begin
+      posFech := (Close - Low) / amplitude;
+
+      if (posFech >= LimiteFechamento) then
+        PaintBar(clVerde)
+      else if (posFech <= 1 - LimiteFechamento) then
+        PaintBar(clVermelho)
+      else
+        PaintBar(clAmarelo);
+    end
+  else
+    PaintBar(clCinza);
+end;

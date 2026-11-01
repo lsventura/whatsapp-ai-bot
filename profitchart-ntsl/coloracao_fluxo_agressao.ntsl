@@ -1,0 +1,47 @@
+/////////////////////////////////////////////////////////////////////
+// Regra de coloracao - FLUXO DE AGRESSAO (ProfitChart / NTSL)
+//
+// Pinta cada candle conforme quem esta dominando o fluxo:
+//   verde    = agressao compradora domina
+//   vermelho = agressao vendedora domina
+//   cinza    = equilibrio (ou candle fraco, se o filtro estiver ligado)
+//
+// REQUISITO: AgressionVolBuy e AgressionVolSell sao indicadores do
+// Tape Reading (Scalper Trader). Segundo o Manual NTSL da Nelogica
+// ficam "disponiveis nos produtos Pro (com Plugin TR), Ultra ou
+// modulo Scalper". Sem isso, use o arquivo
+// coloracao_volume_preco.ntsl (funciona em todas as versoes).
+//
+// Funcoes usadas (todas listadas no Manual NTSL):
+//   AgressionVolBuy, AgressionVolSell, Media, Quantity, PaintBar
+// Como usar: Editor de Estrategias > Nova > "Regra de Coloracao",
+// cole o codigo, compile e aplique ao grafico.
+/////////////////////////////////////////////////////////////////////
+
+input
+  FatorDominancia(1.5);   // lado dominante precisa ter 1,5x o volume de agressao do outro
+  PeriodoMedia(20);       // periodo da media de quantidade (filtro de candle "fraco")
+  FiltrarPorQuantidade(1);// 1 = candles com quantidade abaixo da media ficam cinza; 0 = desliga
+
+var
+  compra   : Float;
+  venda    : Float;
+  mediaQtd : Float;
+
+begin
+  compra   := AgressionVolBuy;    // volume de agressao de COMPRA do candle
+  venda    := AgressionVolSell;   // volume de agressao de VENDA do candle
+  mediaQtd := Media(PeriodoMedia, Quantity);
+
+  // Candle com pouca negociacao nao representa fluxo relevante
+  if (FiltrarPorQuantidade = 1) and (Quantity < mediaQtd) then
+    PaintBar(clCinza)
+
+  // Multiplicamos em vez de dividir para nunca ter divisao por zero
+  else if (compra > venda * FatorDominancia) then
+    PaintBar(clVerde)
+  else if (venda > compra * FatorDominancia) then
+    PaintBar(clVermelho)
+  else
+    PaintBar(clCinza);
+end;

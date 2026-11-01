@@ -1,0 +1,65 @@
+{
+  "id": "agendamento",
+  "title": "Agendamento de consulta",
+  "triggers": ["quero agendar", "agendar consulta", "marcar consulta", "marcar horario", "agendamento"],
+  "url": "${PUBLIC_BASE_URL}/demo-form",
+  "submitSelector": "#enviar",
+  "successSelector": "#sucesso",
+  "successTextSelector": "#protocolo",
+  "fields": [
+    {
+      "name": "nome",
+      "label": "Nome completo",
+      "prompt": "Qual é o seu nome completo?",
+      "type": "text",
+      "selector": "#nome",
+      "required": true
+    },
+    {
+      "name": "email",
+      "label": "E-mail",
+      "prompt": "Qual é o seu e-mail?",
+      "type": "email",
+      "selector": "#email",
+      "required": true
+    },
+    {
+      "name": "telefone",
+      "label": "Telefone",
+      "prompt": "Qual é o seu telefone com DDD?",
+      "type": "phone",
+      "selector": "#telefone",
+      "required": true
+    },
+    {
+      "name": "servico",
+      "label": "Serviço",
+      "prompt": "Qual serviço você procura? (Avaliação, Limpeza, Clareamento ou Urgência)",
+      "type": "select",
+      "selector": "#servico",
+      "required": true,
+      "options": [
+        { "value": "avaliacao", "label": "Avaliação" },
+        { "value": "limpeza", "label": "Limpeza" },
+        { "value": "clareamento", "label": "Clareamento" },
+        { "value": "urgencia", "label": "Urgência" }
+      ]
+    },
+    {
+      "name": "data",
+      "label": "Data preferida",
+      "prompt": "Qual a data preferida? (formato DD/MM/AAAA)",
+      "type": "date",
+      "selector": "#data",
+      "required": true
+    },
+    {
+      "name": "observacoes",
+      "label": "Observações",
+      "prompt": "Alguma observação? (se não tiver, responda \"não\")",
+      "type": "textarea",
+      "selector": "#observacoes",
+      "required": false
+    }
+  ]
+}

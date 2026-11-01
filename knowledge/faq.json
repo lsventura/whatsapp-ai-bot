@@ -1,0 +1,42 @@
+[
+  {
+    "pergunta": "Qual o horário de funcionamento?",
+    "resposta": "Atendemos de segunda a sexta, das 8h às 18h, e aos sábados das 8h às 12h. Domingos e feriados fechado.",
+    "tags": ["horario", "horas", "funcionamento", "funciona", "aberto", "abre", "abrem", "fecha", "fecham", "expediente"]
+  },
+  {
+    "pergunta": "Onde fica a clínica? Qual o endereço?",
+    "resposta": "Rua das Acácias, 123 — Centro, São Paulo/SP (endereço fictício para demonstração). Temos estacionamento conveniado ao lado.",
+    "tags": ["endereco", "localizacao", "chegar", "estacionamento"]
+  },
+  {
+    "pergunta": "Quanto custa uma consulta de avaliação?",
+    "resposta": "A primeira avaliação custa R$ 120,00 (valor fictício) e é abatida do tratamento caso você decida seguir com a gente. Retornos em até 30 dias não são cobrados.",
+    "tags": ["preco", "valor", "custo", "consulta", "avaliacao"]
+  },
+  {
+    "pergunta": "Vocês aceitam convênio ou plano odontológico?",
+    "resposta": "Aceitamos os planos Alfa Dental e Bem Sorrir (nomes fictícios). Para outros convênios, oferecemos recibo para pedido de reembolso.",
+    "tags": ["convenio", "plano", "odontologico", "reembolso"]
+  },
+  {
+    "pergunta": "Quais formas de pagamento são aceitas?",
+    "resposta": "Pix, cartão de débito, cartão de crédito em até 10x e dinheiro. Tratamentos longos podem ser parcelados em boletos mensais.",
+    "tags": ["pagamento", "pix", "cartao", "parcelamento", "parcelar"]
+  },
+  {
+    "pergunta": "Como agendar ou remarcar uma consulta?",
+    "resposta": "Você pode agendar aqui mesmo pelo WhatsApp: digite \"quero agendar\" e eu coleto seus dados e faço o pedido no formulário de agendamento. Para remarcar, avise com pelo menos 24h de antecedência.",
+    "tags": ["agendar", "marcar", "remarcar", "cancelar", "agendamento"]
+  },
+  {
+    "pergunta": "Vocês atendem emergências?",
+    "resposta": "Atendemos urgências (dor forte, dente quebrado, sangramento) no mesmo dia, sujeito a disponibilidade. Em caso de trauma grave, procure um pronto-socorro.",
+    "tags": ["emergencia", "urgencia", "dor", "quebrou"]
+  },
+  {
+    "pergunta": "Clareamento dental: como funciona e quanto tempo dura?",
+    "resposta": "Fazemos clareamento de consultório (1 sessão de ~1h30) e caseiro supervisionado (2 a 3 semanas). O resultado costuma durar de 1 a 3 anos, dependendo dos hábitos. A indicação é feita na avaliação.",
+    "tags": ["clareamento", "branqueamento", "estetica"]
+  }
+]
