@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { CloudApiSender } from "../src/whatsapp/cloudApi.js";
+import { CloudApiSender, normalizeBrMobile } from "../src/whatsapp/cloudApi.js";
 import { parseWebhook } from "../src/whatsapp/parser.js";
 import { signBody, verifySignature } from "../src/whatsapp/signature.js";
 
@@ -72,14 +72,14 @@ describe("CloudApiSender", () => {
     const sender = new CloudApiSender({
       accessToken: "TOKEN",
       phoneNumberId: "123",
-      apiVersion: "v21.0",
+      apiVersion: "v27.0",
       baseUrl: "https://graph.facebook.com",
       fetchImpl: fetchImpl as unknown as typeof fetch,
     });
     await sender.sendText("5511999998888", "Olá!");
 
     const [url, init] = fetchImpl.mock.calls[0] as unknown as [string, RequestInit];
-    expect(url).toBe("https://graph.facebook.com/v21.0/123/messages");
+    expect(url).toBe("https://graph.facebook.com/v27.0/123/messages");
     expect((init.headers as Record<string, string>).authorization).toBe("Bearer TOKEN");
     expect(JSON.parse(init.body as string)).toMatchObject({
       messaging_product: "whatsapp",
@@ -93,10 +93,32 @@ describe("CloudApiSender", () => {
     const sender = new CloudApiSender({
       accessToken: "T",
       phoneNumberId: "1",
-      apiVersion: "v21.0",
+      apiVersion: "v27.0",
       baseUrl: "https://x",
       fetchImpl: (async () => new Response("denied", { status: 401 })) as typeof fetch,
     });
     await expect(sender.sendText("1", "x")).rejects.toThrow("401");
+  });
+});
+
+describe("normalizeBrMobile (9º dígito)", () => {
+  it("reinsere o 9 em celular BR de 12 dígitos", () => {
+    expect(normalizeBrMobile("551188887777")).toBe("5511988887777");
+  });
+  it("não mexe em celular já com 9, fixo BR ou número de outro país", () => {
+    expect(normalizeBrMobile("5511988887777")).toBe("5511988887777");
+    expect(normalizeBrMobile("551133334444")).toBe("551133334444");
+    expect(normalizeBrMobile("15551797781")).toBe("15551797781");
+  });
+  it("CloudApiSender envia com o 9 e respeita brAddNinthDigit=false", async () => {
+    const bodies: Array<{ to: string }> = [];
+    const fetchImpl = (async (_u: string, init: RequestInit) => {
+      bodies.push(JSON.parse(init.body as string));
+      return new Response("{}", { status: 200 });
+    }) as unknown as typeof fetch;
+    const base = { accessToken: "T", phoneNumberId: "1", apiVersion: "v27.0", baseUrl: "https://x", fetchImpl };
+    await new CloudApiSender(base).sendText("551188887777", "oi");
+    await new CloudApiSender({ ...base, brAddNinthDigit: false }).sendText("551188887777", "oi");
+    expect(bodies.map((b) => b.to)).toEqual(["5511988887777", "551188887777"]);
   });
 });

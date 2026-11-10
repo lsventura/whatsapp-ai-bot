@@ -11,6 +11,7 @@ import { KeyedQueue, Semaphore } from "./util/concurrency.js";
 import { maskPhone } from "./util/phone.js";
 import { splitMessage } from "./util/text.js";
 import { buildSystemPrompt } from "./prompt.js";
+import { buildMenu, isGreeting, isMenuRequest, parseChoice } from "./menu.js";
 
 export interface BotDeps {
   sender: MessageSender;
@@ -29,6 +30,8 @@ export interface BotDeps {
   handoffTtlMs?: number;
   /** número de um atendente humano que recebe aviso quando um cliente pede handoff */
   notifyNumber?: string;
+  /** menu numerado (oi/menu/1,2,3…) — no modo sem LLM; "menu" funciona sempre. Padrão: true */
+  menuEnabled?: boolean;
   now?: () => number;
 }
 
@@ -42,7 +45,7 @@ export const MESSAGES = {
   handoffEnd: "Pronto, voltei! Como posso ajudar?",
   llmError: "Tive um problema técnico para responder agora. Pode tentar novamente em instantes? Se preferir, digite *atendente*.",
   noKnowledge:
-    "Não encontrei essa informação por aqui. Digite *atendente* para falar com uma pessoa ou reformule sua pergunta.",
+    "Não encontrei essa informação por aqui. Digite *menu* para ver as opções, *atendente* para falar com uma pessoa, ou reformule sua pergunta.",
   formError: "Não consegui enviar o formulário agora 😕 Tente novamente em alguns minutos ou digite *atendente*.",
   formSuccess: (confirmation?: string) =>
     `✅ Pedido enviado com sucesso!${confirmation ? ` ${confirmation}` : ""}\nEntraremos em contato para confirmar.`,
@@ -128,11 +131,44 @@ export class Bot {
       }
     }
 
-    // 4) pergunta normal: KB + LLM
+    // 4) menu numerado (fallback sem LLM; "menu" funciona sempre)
+    const menuReply = this.menu(contact, text);
+    if (menuReply) {
+      await this.reply(contact, menuReply);
+      return;
+    }
+    session.menuShown = false;
+
+    // 5) pergunta normal: KB + LLM
     const answer = await this.answer(contact, text);
     sessions.addMessage(contact, { role: "user", content: text });
     sessions.addMessage(contact, { role: "assistant", content: answer });
     await this.reply(contact, answer);
+  }
+
+  /** Devolve a resposta do menu, ou null se a mensagem não for do menu. */
+  private menu(contact: string, text: string): string | null {
+    if (this.deps.menuEnabled === false) return null;
+    const session = this.deps.sessions.get(contact);
+    const entries = this.deps.knowledge.entries;
+    const show = () => {
+      session.menuShown = true;
+      return buildMenu({
+        businessName: this.deps.businessName ?? "nossa empresa",
+        entries,
+        formTrigger: this.deps.form?.dialog.config.triggers[0],
+      });
+    };
+    if (isMenuRequest(text)) return show();
+    if (this.deps.llm) return null;
+    if (isGreeting(text)) return show();
+    const choice = session.menuShown ? parseChoice(text) : null;
+    if (choice !== null) {
+      const entry = entries[choice - 1];
+      if (!entry) return `Não tenho a opção ${choice}. Responda com um número de 1 a ${entries.length} ou digite *menu*.`;
+      return `${entry.content}\n\nQuer ver outro assunto? Digite *menu*.`;
+    }
+    return null;
   }
 
   private async handleForm(contact: string, text: string, state: FormState | null): Promise<void> {

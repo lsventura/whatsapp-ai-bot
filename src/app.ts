@@ -83,6 +83,7 @@ export function buildBot(
     topK: config.KNOWLEDGE_TOP_K,
     handoffTtlMs: config.HANDOFF_TTL_MINUTES * 60_000,
     notifyNumber: config.HANDOFF_NOTIFY_NUMBER || undefined,
+    menuEnabled: config.MENU_ENABLED,
   });
 
   const sweeper = setInterval(() => {

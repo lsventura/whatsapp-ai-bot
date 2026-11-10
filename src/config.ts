@@ -19,7 +19,8 @@ const schema = z.object({
   WHATSAPP_ACCESS_TOKEN: z.string().default(""),
   WHATSAPP_PHONE_NUMBER_ID: z.string().default(""),
   WHATSAPP_APP_SECRET: z.string().default(""),
-  WHATSAPP_API_VERSION: z.string().default("v21.0"),
+  WHATSAPP_API_VERSION: z.string().default("v27.0"),
+  WHATSAPP_BR_ADD_NINTH_DIGIT: bool.default(true),
   WHATSAPP_API_BASE_URL: z.string().url().default("https://graph.facebook.com"),
 
   // --- LLM (qualquer API compatível com OpenAI) ---
@@ -31,6 +32,7 @@ const schema = z.object({
   LLM_MAX_CONCURRENCY: z.coerce.number().int().positive().default(4),
 
   // --- Comportamento do bot ---
+  MENU_ENABLED: bool.default(true),
   BOT_NAME: z.string().default("Assistente"),
   BUSINESS_NAME: z.string().default("Clínica Sorriso Exemplo"),
   KNOWLEDGE_FILE: z.string().default("knowledge/faq.json"),

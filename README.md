@@ -5,7 +5,7 @@ Responde com base na **sua própria base de conhecimento** (sem inventar), lembr
 passa para um **atendente humano** quando pedido e ainda **preenche formulários na web sozinho** (Playwright)
 com os dados coletados na conversa.
 
-> Projeto de portfólio/demonstração. A "Clínica Sorriso Exemplo", o FAQ, os preços e o endereço são **fictícios**.
+> Projeto de portfólio/demonstração. A "Clínica Sorriso Exemplo", o FAQ e o endereço são **fictícios**. O FAQ não informa preço, promoção, serviço gratuito nem condição de pagamento (art. 44, I, do Código de Ética Odontológica): a pergunta de preço responde que o valor depende da avaliação e oferece agendar.
 
 [![CI](https://github.com/lsventura/whatsapp-ai-bot/actions/workflows/ci.yml/badge.svg)](https://github.com/lsventura/whatsapp-ai-bot/actions/workflows/ci.yml)
 
@@ -20,7 +20,7 @@ com os dados coletados na conversa.
 - **Rate limit por contato** (janela deslizante) — avisa uma vez e ignora o excesso, protegendo seu custo de LLM.
 - **Idempotência** — reenvios do webhook (mesmo `wamid`) são ignorados.
 - **Automação de formulário com Playwright** — coleta os campos conversando (validação de e-mail, telefone BR, data, listas), confirma com o cliente, abre o Chromium, preenche e envia, e devolve o protocolo no WhatsApp. O formulário é **100% configurável por JSON**. Opcionalmente o LLM extrai vários campos de uma única mensagem.
-- **Modo FAQ sem LLM** — sem `LLM_API_KEY` o bot ainda responde pela base de conhecimento (bom para testar e para custo zero).
+- **Modo FAQ sem LLM** — sem `LLM_API_KEY` o bot ainda responde pela base de conhecimento, com **menu numerado** ("oi" ou "menu" mostra as opções, o número responde). Bom para testar e para custo zero.
 - **Chat de terminal** (`npm run chat`) — testa tudo sem precisar de WhatsApp.
 - **LGPD básico** — números mascarados nos logs, segredos só em variáveis de ambiente.
 - Testes automatizados, ESLint, TypeScript `strict`, Dockerfile, CI no GitHub Actions.
@@ -137,6 +137,9 @@ npm run build && npm start
 
 ### 3) Conectar ao WhatsApp (Cloud API)
 
+Passo a passo detalhado com o número de teste grátis: [TESTE-META.md](TESTE-META.md). Simulação local da Meta: `npm run mock:graph` + `npm run simular -- "oi"`. Túnel: `npm run tunel`.
+
+
 1. Em [developers.facebook.com](https://developers.facebook.com) crie um app do tipo **Business** e adicione o produto **WhatsApp**.
 2. Em *WhatsApp → API Setup* copie o **Phone number ID** e gere o **token de acesso** (para produção use um token permanente de *System User*). Preencha `WHATSAPP_PHONE_NUMBER_ID` e `WHATSAPP_ACCESS_TOKEN`.
 3. Em *Configurações do app → Básico* copie o **App Secret** para `WHATSAPP_APP_SECRET` (valida a assinatura do webhook).
@@ -210,7 +213,7 @@ fluxo completo de formulário (inclusive extração via LLM e correção de camp
 
 ## Casos de uso
 
-- **Atendimento e FAQ 24h** para clínicas, escritórios, escolas, lojas e prestadores de serviço: horários, preços, endereço, formas de pagamento.
+- **Atendimento e FAQ 24h** para clínicas, escritórios, escolas, lojas e prestadores de serviço: horários, endereço, convênios, agendamento.
 - **Pré-atendimento e qualificação de leads**: coleta nome, contato e interesse e já registra no CRM/formulário/planilha web.
 - **Agendamentos**: o cliente conversa e o bot preenche o formulário de agendamento do sistema que você já usa (sem API).
 - **Cadastro/solicitações em portais sem API**: integração via navegador automatizado quando só existe formulário web.

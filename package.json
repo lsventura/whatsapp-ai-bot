@@ -11,7 +11,10 @@
     "test": "vitest run --exclude tests/e2e/**",
     "test:e2e": "vitest run tests/e2e",
     "chat": "tsx src/cli.ts",
-    "check": "npm run typecheck && npm run lint && npm test"
+    "check": "npm run typecheck && npm run lint && npm test",
+    "simular": "node scripts/simular-meta.mjs",
+    "mock:graph": "node scripts/mock-graph.mjs",
+    "tunel": "bash scripts/tunel.sh"
   },
   "keywords": [
     "whatsapp",
@@ -44,7 +47,10 @@
     "vitest": "^5.0.5"
   },
   "private": true,
-  "repository": { "type": "git", "url": "git+https://github.com/lsventura/whatsapp-ai-bot.git" },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lsventura/whatsapp-ai-bot.git"
+  },
   "engines": {
     "node": ">=20.12"
   }

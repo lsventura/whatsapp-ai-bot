@@ -11,4 +11,9 @@ export default tseslint.config(
       "@typescript-eslint/consistent-type-imports": "error",
     },
   },
+  {
+    // scripts utilitários em Node puro (.mjs)
+    files: ["scripts/**/*.mjs"],
+    languageOptions: { globals: { console: "readonly", fetch: "readonly", process: "readonly" } },
+  },
 );

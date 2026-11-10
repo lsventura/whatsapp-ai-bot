@@ -5,7 +5,20 @@ export interface CloudApiOptions {
   phoneNumberId: string;
   apiVersion: string;
   baseUrl: string;
+  /** Brasil: o webhook às vezes traz o celular sem o 9 (55 11 8888-7777). Reinsere o 9 ao enviar. */
+  brAddNinthDigit?: boolean;
   fetchImpl?: typeof fetch;
+}
+
+/**
+ * Celular BR com 12 dígitos (55 + DDD + 8 dígitos começando em 6-9) vira 13 dígitos com o 9.
+ * Sem isso, o número de teste da Meta recusa o envio (erro 131030, destinatário fora da lista),
+ * porque a lista de destinatários guarda o número com o 9.
+ */
+export function normalizeBrMobile(to: string): string {
+  const digits = to.replace(/\D/g, "");
+  if (/^55\d{2}[6-9]\d{7}$/.test(digits)) return `${digits.slice(0, 4)}9${digits.slice(4)}`;
+  return digits || to;
 }
 
 /** Envio de mensagens pela WhatsApp Business Cloud API (oficial, da Meta). */
@@ -20,7 +33,7 @@ export class CloudApiSender implements MessageSender {
     await this.post({
       messaging_product: "whatsapp",
       recipient_type: "individual",
-      to,
+      to: this.opts.brAddNinthDigit === false ? to : normalizeBrMobile(to),
       type: "text",
       text: { preview_url: false, body: text },
     });

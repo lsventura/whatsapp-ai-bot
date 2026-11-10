@@ -11,10 +11,10 @@ describe("KnowledgeBase", () => {
   it.each([
     ["que horas vocês abrem?", "Qual o horário de funcionamento?"],
     ["qual é o endereço de vocês", "Onde fica a clínica? Qual o endereço?"],
-    ["aceita pix e parcelamento no cartão?", "Quais formas de pagamento são aceitas?"],
-    ["quanto custa a avaliação", "Quanto custa uma consulta de avaliação?"],
+    ["aceita pix e parcelamento no cartão?", "Como funciona o pagamento?"],
+    ["quanto custa a avaliação", "Quanto custa a consulta ou o tratamento?"],
     ["tem convênio?", "Vocês aceitam convênio ou plano odontológico?"],
-    ["quero clarear os dentes, como funciona o clareamento", "Clareamento dental: como funciona e quanto tempo dura?"],
+    ["quero clarear os dentes, como funciona o clareamento", "Clareamento dental: como funciona?"],
   ])("recupera a entrada certa para %j", (query, expectedTitle) => {
     expect(kb.search(query)[0]?.entry.title).toBe(expectedTitle);
   });

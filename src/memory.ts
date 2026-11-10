@@ -12,6 +12,8 @@ export interface Session {
   handoff: HandoffState | null;
   /** Estado da coleta de formulário (módulo forms) — opaco para a memória. */
   formState: unknown;
+  /** o menu numerado foi enviado e o próximo número escolhe uma opção */
+  menuShown?: boolean;
   lastActivity: number;
 }
 

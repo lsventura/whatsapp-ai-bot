@@ -16,6 +16,7 @@ const sender = hasWhatsApp(config)
       phoneNumberId: config.WHATSAPP_PHONE_NUMBER_ID,
       apiVersion: config.WHATSAPP_API_VERSION,
       baseUrl: config.WHATSAPP_API_BASE_URL,
+      brAddNinthDigit: config.WHATSAPP_BR_ADD_NINTH_DIGIT,
     })
   : new ConsoleSender();
 if (!hasWhatsApp(config)) {
