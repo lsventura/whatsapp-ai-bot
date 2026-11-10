@@ -12,6 +12,8 @@ const bool = z
 
 const schema = z.object({
   PORT: z.coerce.number().int().positive().default(3000),
+  /** 0.0.0.0 = todas as interfaces (Docker); 127.0.0.1 = só local, atrás de proxy (Caddy/nginx) */
+  HOST: z.string().default("0.0.0.0"),
   LOG_LEVEL: z.enum(["fatal", "error", "warn", "info", "debug", "trace", "silent"]).default("info"),
 
   // --- WhatsApp Cloud API (oficial) ---

@@ -37,8 +37,8 @@ const app = createServer({
   extraRouters,
 });
 
-const server = app.listen(config.PORT, () => {
-  logger.info({ port: config.PORT }, "servidor no ar — webhook em /webhook, health em /health");
+const server = app.listen(config.PORT, config.HOST, () => {
+  logger.info({ host: config.HOST, port: config.PORT }, "servidor no ar — webhook em /webhook, health em /health");
 });
 
 async function shutdown(signal: string): Promise<void> {
